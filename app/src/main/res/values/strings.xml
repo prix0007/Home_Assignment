@@ -1,0 +1,53 @@
+<resources>
+    <string name="app_name">Semester</string>
+    <string name="tab_text_1">Login</string>
+    <string name="tab_text_2">Register</string>
+    <string name="logged_in">You are Logged In </string>
+    <string name="title_activity_logged_in">LoggedIn</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+
+    <string name="home_second">Home Second</string>
+    <string-array name="banks_array">
+        <item>State Bank Of India</item>
+        <item>Bank of Baroda</item>
+        <item>ICICI Bank</item>
+        <item>HDFC Bank</item>
+        <item>Punjab National Bank</item>
+    </string-array>
+    <string-array name="payment_mode_array">
+        <item>NEFT</item>
+        <item>IMPS</item>
+        <item>DemandDraft(DD)</item>
+        <item>Cheque</item>
+    </string-array>
+    <string-array name="report_issues_array">
+        <item>Wrong Entry</item>
+        <item>Any UI Defaults</item>
+        <item>Bug Report</item>
+        <item>Any Other</item>
+    </string-array>
+    <string-array name="extension_reason_array">
+        <item>Bank Delay</item>
+        <item>Financial Issue</item>
+        <item>Any Other</item>
+    </string-array>
+    <string-array name="semster_array">
+        <item>Ist</item>
+        <item>IInd</item>
+        <item>IIIrd</item>
+        <item>IVth</item>
+        <item>Vth</item>
+    </string-array>
+    <string name="format_extension">Respected Sir, <br /> I Prince Anuragi Semster IVth of CSE Branch Requests for Fee Extension Due to ,</string>
+    <string name="format_extension_2">You are Kindly requested to grant me Fee Extension for the Same.</string>
+    <string name="disclamer">The Above Details are provided my me and I Acknowledge that and failing on any false information may leave my cancellation of registration</string>
+</resources>
