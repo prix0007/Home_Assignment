@@ -18,21 +18,19 @@
                 android:textSize="20sp"
                 style="@style/AppTheme"/>
             <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Enter your Name"
-                />
-            <EditText
+                android:id="@+id/email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Enter your Email"
                 />
             <EditText
+                android:id="@+id/feedback"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
                 android:hint="Enter FeedBack"
-                android:inputType="textMultiLine"/>
+                android:inputType="text"/>
             <Button
+                android:id="@+id/submit_feedback"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Submit Feedback"/>

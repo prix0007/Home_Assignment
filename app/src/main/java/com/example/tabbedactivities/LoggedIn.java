@@ -4,12 +4,16 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.tabbedactivities.ui.logout.Logout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.internal.NavigationMenu;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import androidx.annotation.NonNull;
 import androidx.navigation.NavController;
@@ -20,9 +24,14 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-public class LoggedIn extends AppCompatActivity implements  NavigationView.OnNavigationItemSelectedListener, Logout.finishActivity {
+public class LoggedIn extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
+
+    FirebaseAuth firebaseAuth;
+    FirebaseUser firebaseUser;
+
+    TextView userEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +52,15 @@ public class LoggedIn extends AppCompatActivity implements  NavigationView.OnNav
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
-        //navigationView.setNavigationItemSelectedListener(this);
+
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
+
+
+        View headerView = navigationView.getHeaderView(0);
+        userEmail = headerView.findViewById(R.id.userEmail);
+        if(userEmail!=null)
+            userEmail.setText(firebaseUser.getEmail());
     }
 
     @Override
@@ -51,25 +68,5 @@ public class LoggedIn extends AppCompatActivity implements  NavigationView.OnNav
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
-    }
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-
-            case R.id.nav_logout: {
-                destroyActivity();
-                Toast.makeText(getApplicationContext(), "Logout Clicked", Toast.LENGTH_SHORT).show();
-                break;
-            }
-        }
-        return false;
-    }
-    private void setNavigationViewListener() {
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_logout);
-        navigationView.setNavigationItemSelectedListener(this);
-    }
-    public void destroyActivity(){
-        finish();
     }
 }

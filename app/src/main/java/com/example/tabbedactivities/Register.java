@@ -2,77 +2,110 @@ package com.example.tabbedactivities;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link Register#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class Register extends Fragment implements View.OnClickListener {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+public class Register extends Fragment {
 
     public Register() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Register.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static Register newInstance(String param1, String param2) {
-        Register fragment = new Register();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
+    private FirebaseAuth firebaseAuth;
+    Button register_btn;
+    private EditText email, pwd, cnfrmpwd;
+    private ProgressBar progressBar;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_register, container, false);
-        Button b = (Button) v.findViewById(R.id.button);
-        b.setOnClickListener(this);
+        register_btn = (Button) v.findViewById(R.id.button);
+        email = v.findViewById(R.id.email);
+        pwd = v.findViewById(R.id.pwd);
+        cnfrmpwd = v.findViewById(R.id.cnfrmpwd);
+
+        progressBar = v.findViewById(R.id.progress);
+
+        firebaseAuth = FirebaseAuth.getInstance();
+
+       register_btn.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               progressBar.setVisibility(View.VISIBLE);
+               register_btn.setClickable(false);
+
+               String em = email.getText().toString();
+               String pw = pwd.getText().toString();
+               String cnfpwd = cnfrmpwd.getText().toString();
+               if(!pw.equals(cnfpwd)) {
+                   progressBar.setVisibility(View.GONE);
+                   register_btn.setClickable(true);
+                   Toast.makeText(getActivity(), "Password doesn't match.", Toast.LENGTH_LONG).show();
+                   return;
+               }
+               if(pw.length() < 8){
+                   progressBar.setVisibility(View.GONE);
+                   register_btn.setClickable(true);
+                   Toast.makeText(getActivity(), "Password must be 8 character long.", Toast.LENGTH_LONG).show();
+                   return;
+               }
+               firebaseAuth.createUserWithEmailAndPassword( em, pw).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                   @Override
+                   public void onComplete(@NonNull Task<AuthResult> task) {
+                       if(task.isSuccessful()){
+                           firebaseAuth.getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                               @Override
+                               public void onComplete(@NonNull Task<Void> task) {
+                                   if(task.isSuccessful()){
+                                       register_btn.setClickable(true);
+                                       Toast.makeText(getActivity(), "SuccessFully Registered. Please Verify your Email.\n Check your Registered Email", Toast.LENGTH_LONG).show();
+                                   } else {
+                                       Toast.makeText(getActivity(), task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                                   }
+                               }
+                           });
+                           resetInputForm();
+                       } else {
+                           Toast.makeText(getActivity(), task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                           resetInputForm();
+                       }
+                       progressBar.setVisibility(View.GONE);
+                   }
+               });
+           }
+       });
         return v;
     }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.button:
-                Toast.makeText(getActivity(), "Register Clicked", Toast.LENGTH_SHORT).show();
-                break;
-        }
+    private  void resetInputForm(){
+         email.setText(""); pwd.setText(""); cnfrmpwd.setText("");
     }
+//    @Override
+//    public void onClick(View v) {
+//        switch (v.getId()) {
+//            case R.id.button:
+//                Toast.makeText(getActivity(), "Register Clicked", Toast.LENGTH_SHORT).show();
+//                break;
+//        }
+//    }
 }
