@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -29,6 +30,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import static androidx.core.content.ContextCompat.getSystemService;
 
@@ -38,6 +41,8 @@ public class HomeFragment extends Fragment  {
     private HomeViewModel homeViewModel;
     private Context mContext;
     private Button view_Course;
+    private CheckBox studentSubmitted, approvedByFac;
+    private TextView infoView;
     FirebaseFirestore firebaseFirestore;
     FirebaseAuth firebaseAuth;
 
@@ -48,32 +53,35 @@ public class HomeFragment extends Fragment  {
         mContext = getActivity();
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
+        initializeView(root);
 
-        view_Course = root.findViewById(R.id.view_course_current_status);
         final TextView textView = root.findViewById(R.id.text_home);
 
         final LinearLayout current_status = root.findViewById(R.id.current_status);
 
-        DocumentReference documentReference = firebaseFirestore.collection("users").document(firebaseAuth.getCurrentUser().getUid());
-        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        if(document.get("enrolled") != null && (Boolean) document.get("enrolled") == false)
-                            current_status.setVisibility(View.GONE);
-                        else {
-                            current_status.setVisibility(View.VISIBLE);
+        firebaseFirestore.collection("pendingSemesterForm").whereEqualTo("userId", firebaseAuth.getCurrentUser().getUid())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            QuerySnapshot query  = task.getResult();
+                            if(query.getDocuments().size() > 0){
+                                studentSubmitted.setChecked(true);
+                            }
+                            for(QueryDocumentSnapshot doc : query){
+                                Log.d(TAG, doc.toString());
+                                if((Boolean) doc.getData().get("approved") ==  true){
+                                    approvedByFac.setChecked(true);
+                                    infoView.setText("Form is Approved by Your Faculty Advisor. You are Enrolled Successfully. Keep your Form Id for Future Reference :\n" + doc.getId().toString());
+                                } else {
+                                    infoView.setText("Form is Submitted by You. Not yet Approved by Your Faculty Advisor");
+
+                                }
+                            }
                         }
-                    } else {
-                        Log.d(TAG, "No such document");
                     }
-                } else {
-                    Log.d(TAG, "get failed with ", task.getException());
-                }
-            }
-        });
+                });
 
         view_Course.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,7 +100,12 @@ public class HomeFragment extends Fragment  {
         });
         return root;
     }
-
+    private void initializeView(View v){
+        studentSubmitted = v.findViewById(R.id.studentSubmittedForm);
+        approvedByFac = v.findViewById(R.id.studentApprovedByFaculty);
+        infoView = v.findViewById(R.id.informationText);
+        view_Course = v.findViewById(R.id.view_course_current_status);
+    }
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);

@@ -58,6 +58,7 @@ public class FeeExtension extends Fragment {
                                 DocumentReference documentReference = firebaseFirestore.collection("pendingExtensionForm").document(docId);
                                 Map<String, Object> form = new HashMap<String, Object>();
                                 form.put("approved", false);
+                                form.put("rejected", false);
                                 form.put("userId", firebaseAuth.getCurrentUser().getUid());
                                 documentReference.set(form).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override

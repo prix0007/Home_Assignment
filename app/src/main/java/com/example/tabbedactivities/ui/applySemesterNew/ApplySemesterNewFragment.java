@@ -91,6 +91,7 @@ public class ApplySemesterNewFragment extends Fragment {
                                 final DocumentReference documentReference = firebaseFirestore.collection("pendingSemesterForm").document(docId);
                                 final Map<String, Object> form = new HashMap<String, Object>();
                                 form.put("approved", false);
+                                form.put("rejected", false);
                                 form.put("userId", firebaseAuth.getCurrentUser().getUid());
                                 firebaseFirestore.collection("users").document(firebaseAuth.getCurrentUser().getUid())
                                         .get()
@@ -256,6 +257,7 @@ public class ApplySemesterNewFragment extends Fragment {
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if(task.isSuccessful()){
                                             message("Submitted Form Successfully");
+
                                         } else {
                                             message("Some Error Occured. Please try Again Later");
                                         }

@@ -17,7 +17,9 @@
         <ListView
             android:id="@+id/pendingExtensionApplications"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="200dp"
+            android:background="@drawable/border"
+            android:layout_margin="20dp"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -28,6 +30,21 @@
         <ListView
             android:id="@+id/approvedExtensionApplications"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="200dp"
+            android:background="@drawable/border"
+            android:layout_margin="20dp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Rejected Extension Applications"
+            android:textAlignment="center"
+            android:paddingTop="8dp"
+            android:textSize="30dp"/>
+        <ListView
+            android:id="@+id/rejectedExtensionApplications"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:background="@drawable/border"
+            android:layout_margin="20dp" />
     </LinearLayout>
 </ScrollView>

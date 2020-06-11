@@ -6,4 +6,6 @@
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
     <color name="success">#64dd17</color>
+    <color name="light_green">#b2ff59</color>
+    <color name="light_red">#ffab91</color>
 </resources>

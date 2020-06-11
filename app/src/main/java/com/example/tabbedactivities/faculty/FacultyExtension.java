@@ -32,9 +32,11 @@ public class FacultyExtension extends Fragment {
 
     FirebaseFirestore firebaseFirestore;
     FirebaseAuth firebaseAuth;
-    ListView pendingExtensionApplications, approvedExtensionApplications;
+    ListView pendingExtensionApplications, approvedExtensionApplications, rejectedExtensionApplications;
     ArrayList<String[]> pendingApplicants = new ArrayList<>();
     ArrayList<String[]> approvedApplicants = new ArrayList<>();
+    ArrayList<String[]> rejectedApplicants = new ArrayList<>();
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -43,7 +45,9 @@ public class FacultyExtension extends Fragment {
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
 
-        firebaseFirestore.collection("pendingExtensionForm").whereEqualTo("approved", false)
+        firebaseFirestore.collection("pendingExtensionForm")
+                .whereEqualTo("approved", false)
+                .whereEqualTo("rejected", false)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -71,7 +75,7 @@ public class FacultyExtension extends Fragment {
                     }
                 });
 
-        firebaseFirestore.collection("pendingExtensionrForm").whereEqualTo("approved", true)
+        firebaseFirestore.collection("pendingExtensionForm").whereEqualTo("approved", true)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -91,13 +95,39 @@ public class FacultyExtension extends Fragment {
                                 approvedApplicants.add(applicant);
                             }
                             for(String[] applicant: approvedApplicants){
-                                Log.d("Faculty", applicant[0]);
+                                Log.d("Approved Extension", applicant[0]);
                             }
                             renderListApproved();
-
                         }
                     }
                 });
+        firebaseFirestore.collection("pendingExtensionForm").whereEqualTo("rejected", true)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            QuerySnapshot document = task.getResult();
+                            for(QueryDocumentSnapshot doc : document){
+                                Map documentSnapshot = doc.getData();
+                                String name = (String) documentSnapshot.get("name");
+                                String enrollment_no = (String) documentSnapshot.get("enrollment_no");
+                                String initials = "";
+                                String[] arrOfName = name.split(" ");
+                                for(String partName: arrOfName){
+                                    initials += String.valueOf(partName.charAt(0));
+                                }
+                                String[] applicant = {name, enrollment_no, initials};
+                                rejectedApplicants.add(applicant);
+                            }
+                            for(String[] applicant: rejectedApplicants){
+                                Log.d("Faculty", applicant[0]);
+                            }
+                            renderListRejected();
+                        }
+                    }
+                });
+
         pendingExtensionApplications.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -119,6 +149,16 @@ public class FacultyExtension extends Fragment {
                 startActivity(i);
             }
         });
+        rejectedExtensionApplications.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                TextView en = view.findViewById(R.id.studentEnrollmentNo);
+                Intent i = new Intent(getContext(), ExtensionForm.class);
+                i.putExtra("enrollment_no", en.getText());
+                i.putExtra("collection", "pendingExtensionForm");
+                startActivity(i);
+            }
+        });
 
         return root;
     }
@@ -126,6 +166,7 @@ public class FacultyExtension extends Fragment {
     private  void initializeViews(View v){
         pendingExtensionApplications = v.findViewById(R.id.pendingExtensionApplications);
         approvedExtensionApplications = v.findViewById(R.id.approvedExtensionApplications);
+        rejectedExtensionApplications = v.findViewById(R.id.rejectedExtensionApplications);
     }
 
     private void renderList(){
@@ -135,5 +176,9 @@ public class FacultyExtension extends Fragment {
     private void renderListApproved(){
         ApplicantListAdapter adapter = new ApplicantListAdapter(getActivity(), R.layout.list_item, approvedApplicants);
         approvedExtensionApplications.setAdapter(adapter);
+    }
+    private void renderListRejected(){
+        ApplicantListAdapter adapter = new ApplicantListAdapter(getActivity(), R.layout.list_item, rejectedApplicants);
+        rejectedExtensionApplications.setAdapter(adapter);
     }
 }
