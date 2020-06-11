@@ -18,11 +18,14 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.tabbedactivities.R;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -40,7 +43,7 @@ public class EditProfileFragment extends Fragment {
     private ImageView edit;
     private Button saveChanges;
     private EditText fname, mname, dob, cs, bg, eno, eb;
-    private TextView tfname, tmname, tdob, tcs, tbg, teno, teb, tname, temail;
+    private TextView tfname, tmname, tdob, tcs, tbg, teno, teb, tname, temail, userName, userEmail;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -98,6 +101,7 @@ public class EditProfileFragment extends Fragment {
                 getDataAndUpdate();
             }
         });
+        fetchDataAndUpdate();
 
         return root;
     }
@@ -117,7 +121,10 @@ public class EditProfileFragment extends Fragment {
         tbg= v.findViewById(R.id.userBloodGroup);
         teno= v.findViewById(R.id.userEnrollmentNo);
         teb= v.findViewById(R.id.userBranch);
+        userName = v.findViewById(R.id.userName);
+        userEmail = v.findViewById(R.id.userEmail);
     }
+
 
     private void getDataAndUpdate(){
         String sfname = fname.getText().toString().trim();
@@ -139,17 +146,49 @@ public class EditProfileFragment extends Fragment {
 
         userID = firebaseAuth.getCurrentUser().getUid();
         DocumentReference documentReference = firebaseFirestore.collection("users").document(userID);
-        documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+        documentReference.update(user).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Log.d("SUCCESS","SuccessFully submitted report for "+userID);
-                Toast.makeText(getContext(), "SuccessFully Submitted Your Report . We will contact you in mail", Toast.LENGTH_LONG).show();
+                Log.d("SUCCESS","SuccessFully submitted "+userID);
+                Toast.makeText(getContext(), "SuccessFully Submitted.", Toast.LENGTH_LONG).show();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Log.d("FAILURE","Something Occured and Error Happened");
                 Toast.makeText(getContext(), "Some Error Occured", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+    //Fetch data from firebase and update profile Element
+    private  void fetchDataAndUpdate(){
+        DocumentReference documentReference = firebaseFirestore.collection("users").document(firebaseAuth.getCurrentUser().getUid());
+        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    DocumentSnapshot document = task.getResult();
+                    Toast.makeText(getActivity(), "Fetched Document", Toast.LENGTH_LONG).show();
+                    tfname.setText((String) document.get("father_name"));
+                    tmname.setText((String) document.get("mother_name"));
+                    tdob.setText((String) document.get("dob"));
+                    tcs.setText((String) document.get("current_semester"));
+                    tbg.setText((String) document.get("blood_group"));
+                    teno.setText((String) document.get("enrollment_no"));
+                    teb.setText((String) document.get("branch"));
+                    fname.setText((String) document.get("father_name"));
+                    mname.setText((String) document.get("mother_name"));
+                    dob.setText((String) document.get("dob"));
+                    cs.setText((String) document.get("current_semester"));
+                    bg.setText((String) document.get("blood_group"));
+                    eno.setText((String) document.get("enrollment_no"));
+                    eb.setText((String) document.get("branch"));
+                    userName.setText((String) document.get("name"));
+                    userEmail.setText((String) document.get("email"));
+
+                } else {
+                    Toast.makeText(getActivity(), "Some Error Occured", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

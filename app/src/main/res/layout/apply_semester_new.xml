@@ -77,18 +77,19 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="40dp">
+
                 <TextView
+                    style="@style/AppTheme"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:text="Unique Transaction No. "
-                    android:textSize="20sp"
-                    style="@style/AppTheme"/>
+                    android:text="Unique No. "
+                    android:textSize="20sp" />
+
                 <EditText
                     android:id="@+id/payment_id"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:hint=" UTR No. Here"
-                    />
+                    android:hint=" Checque, Transaction of DD No. Here" />
             </LinearLayout>
             <Space
                 android:layout_width="match_parent"
@@ -106,11 +107,13 @@
                 <RadioGroup
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:id="@+id/backlog_group">
                     <RadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Backlogs"
+                        android:id="@+id/form_backlog"
                         />
                     <RadioButton
                         android:layout_width="wrap_content"
@@ -185,6 +188,7 @@
                     android:textSize="20sp"
                     style="@style/AppTheme"/>
                 <RadioGroup
+                    android:id="@+id/elective_subject"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
@@ -216,6 +220,7 @@
                 >
 
                 <RadioGroup
+                    android:id="@+id/acknowledgemwnt"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -227,6 +232,7 @@
                         android:text="Yes" />
 
                     <RadioButton
+                        android:id="@+id/deny"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="No" />
@@ -234,6 +240,7 @@
                 </RadioGroup>
             </RelativeLayout>
             <Button
+                android:id="@+id/submit_form"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Submit"/>

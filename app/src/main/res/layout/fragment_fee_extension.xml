@@ -29,6 +29,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="20dp"/>
             <TextView
+                android:id="@+id/first_message"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/format_extension"
@@ -37,6 +38,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="10dp"/>
             <Spinner
+                android:id="@+id/reason"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:entries="@array/extension_reason_array"/>
@@ -44,6 +46,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="20dp"/>
             <EditText
+                android:id="@+id/text_reason"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
                 android:hint="Enter your Reason Here"
@@ -63,6 +66,7 @@
                 android:layout_height="20dp"
                 />
             <Button
+                android:id="@+id/request_extension"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Request"/>

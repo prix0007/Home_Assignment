@@ -28,7 +28,9 @@
             android:textSize="20sp" />
 
         <include
-            layout="@layout/current_status"/>
+            layout="@layout/current_status"
+            android:id="@+id/current_status"
+            />
     </LinearLayout>
     </ScrollView>
 </LinearLayout>

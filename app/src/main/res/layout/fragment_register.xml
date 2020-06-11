@@ -18,7 +18,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="50sp"
                 />
-
+            <EditText
+                android:id="@+id/name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="Enter your Full Name"
+                android:inputType="text" />
             <EditText
                 android:id="@+id/email"
                 android:layout_width="match_parent"
@@ -41,8 +47,23 @@
                 android:ems="10"
                 android:inputType="textPassword"
                 android:hint="Confirm Password"/>
-
-
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                />
+            <Spinner
+                android:id="@+id/role"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:entries="@array/role"
+                />
+            <EditText
+                android:id="@+id/enrollmentNo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="text"
+                android:hint="Enrollment ID"/>
             <Button
                 android:id="@+id/button"
                 android:layout_width="match_parent"

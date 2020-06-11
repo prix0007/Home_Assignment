@@ -22,9 +22,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 
-public class Login extends Fragment implements View.OnClickListener {
+public class Login extends Fragment {
 
 
     public Login() {
@@ -39,6 +41,7 @@ public class Login extends Fragment implements View.OnClickListener {
     }
 
     private FirebaseAuth firebaseAuth;
+    private FirebaseFirestore firebaseFirestore;
     private ProgressBar progressBar;
     private EditText uname, pwd;
     private TextView forgot_pwd;
@@ -56,6 +59,7 @@ public class Login extends Fragment implements View.OnClickListener {
         progressBar = v.findViewById(R.id.progress);
 
         firebaseAuth = FirebaseAuth.getInstance();
+        firebaseFirestore = FirebaseFirestore.getInstance();
 
         //b.setOnClickListener(this);
         login_btn.setOnClickListener(new View.OnClickListener() {
@@ -65,24 +69,49 @@ public class Login extends Fragment implements View.OnClickListener {
                 progressBar.setVisibility(View.VISIBLE);
                 String userName = uname.getText().toString();
                 String password = pwd.getText().toString();
-                firebaseAuth.signInWithEmailAndPassword(userName, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        progressBar.setVisibility(View.GONE);
-                        login_btn.setClickable(true);
-                        if(task.isSuccessful()){
-                            if(firebaseAuth.getCurrentUser().isEmailVerified()){
-                                Toast.makeText(getActivity(), "Login SuccessFully", Toast.LENGTH_LONG).show();
-                                Intent i = new Intent(getActivity(), LoggedIn.class);
-                                startActivity(i);
+                if(checkEmailPassword(userName, password)){
+                    firebaseAuth.signInWithEmailAndPassword(userName, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            progressBar.setVisibility(View.GONE);
+                            login_btn.setClickable(true);
+                            if(task.isSuccessful()){
+                                if(firebaseAuth.getCurrentUser().isEmailVerified()){
+                                    Toast.makeText(getActivity(), "Login SuccessFully", Toast.LENGTH_LONG).show();
+                                    firebaseFirestore.collection("users").document(firebaseAuth.getCurrentUser().getUid())
+                                            .get()
+                                            .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                    if(task.isSuccessful()){
+                                                        if(task.getResult().get("role").equals("Student")){
+                                                            Intent i = new Intent(getActivity(), LoggedIn.class);
+                                                            startActivity(i);
+                                                        } else  if(task.getResult().get("role").equals("Faculty")){
+                                                            Intent i = new Intent(getActivity(), LoggedInFaculty.class);
+                                                            startActivity(i);
+                                                        } else {
+                                                            Toast.makeText(getActivity(), "Your Role is not defined Contact Admin", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    } else {
+                                                        Toast.makeText(getActivity(), "Error while fetching Role." + task.getException().toString(), Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }
+                                            });
+                                } else {
+                                    Toast.makeText(getActivity(), "Please verify your Email for Access", Toast.LENGTH_LONG).show();
+                                }
                             } else {
-                                Toast.makeText(getActivity(), "Please verify your Email for Access", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity(), task.getException().getMessage(), Toast.LENGTH_LONG).show();
                             }
-                        } else {
-                            Toast.makeText(getActivity(), task.getException().getMessage(), Toast.LENGTH_LONG).show();
                         }
-                    }
-                });
+                    });
+                } else {
+                    Toast.makeText(getActivity(), "Make sure to fill Form", Toast.LENGTH_LONG).show();
+                    progressBar.setVisibility(View.GONE);
+                    login_btn.setClickable(true);
+                }
+
             }
         });
         forgot_pwd.setOnClickListener(new View.OnClickListener() {
@@ -96,14 +125,13 @@ public class Login extends Fragment implements View.OnClickListener {
         return v;
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.button:
-                Toast.makeText(getActivity(), "Login Clicked", Toast.LENGTH_SHORT).show();
-                Intent i = new Intent(getActivity(), LoggedIn.class);
-                startActivity(i);
-                break;
+    private boolean checkEmailPassword ( String username, String password){
+        if(username.length() == 0){
+            return false;
         }
+        if(password.length() == 0){
+            return false;
+        }
+        return true;
     }
 }

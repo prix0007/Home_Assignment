@@ -17,11 +17,14 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.tabbedactivities.R;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -53,30 +56,50 @@ public class ReportFragment extends Fragment {
                 String semail = email.getText().toString().trim();
                 String ssubject = subject.getSelectedItem().toString().trim();
                 String sissue = issue.getText().toString().trim();
+                if(semail.length() < 1 || sissue.length() < 1){
+                    Toast.makeText(getActivity(), "Complete Form to SUbmit", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 userID = firebaseAuth.getCurrentUser().getUid();
-                DocumentReference documentReference = firebaseFirestore.collection("reports").document(userID);
+                final DocumentReference documentReference = firebaseFirestore.collection("reports").document();
+
+
+
                 final Map<String, Object> reportObj = new HashMap<>();
                 reportObj.put("email", semail);
                 reportObj.put("subject",ssubject);
                 reportObj.put("issue",sissue);
-                documentReference.set(reportObj).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d("SUCCESS","SuccessFully submitted report for "+userID);
-                        Toast.makeText(getContext(), "SuccessFully Submitted Your Report . We will contact you in mail", Toast.LENGTH_LONG).show();
-                        email.setText("");
-                        subject.setSelection(0);
-                        issue.setText("");
+                reportObj.put("userId", userID);
+                firebaseFirestore.collection("users").document(userID)
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if(task.isSuccessful()){
+                                    reportObj.put("name", task.getResult().get("name").toString());
+                                    documentReference.set(reportObj).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Log.d("SUCCESS","SuccessFully submitted report for "+userID);
+                                            Toast.makeText(getContext(), "SuccessFully Submitted Your Report . We will contact you in mail", Toast.LENGTH_LONG).show();
+                                            email.setText("");
+                                            subject.setSelection(0);
+                                            issue.setText("");
 
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d("FAILURE","Something Occured and Error Happened");
-                        Toast.makeText(getContext(), "Some Error Occured", Toast.LENGTH_LONG).show();
-                    }
-                });
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.d("FAILURE","Something Occured and Error Happened");
+                                            Toast.makeText(getContext(), "Some Error Occured", Toast.LENGTH_LONG).show();
+                                        }
+                                    });
+                                } else {
+                                    Toast.makeText(getActivity(), "Some Error Occured", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
             }
         });
         return v;

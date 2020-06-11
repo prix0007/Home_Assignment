@@ -108,7 +108,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="end"
-                    android:text="User Father Name"
+                    android:text=""
                     android:textSize="20dp"
                     android:layout_marginLeft="10dp"/>
                 <EditText
@@ -116,7 +116,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="end"
-                    android:text="User Father Name"
+                    android:text=""
                     android:textSize="20dp"
                     android:layout_marginLeft="10dp"
                     android:visibility="gone"/>
@@ -140,7 +140,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="end"
-                    android:text="User Mother Name"
+                    android:text=""
                     android:textSize="20dp"
                     android:layout_marginLeft="10dp"/>
                 <EditText
@@ -148,7 +148,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="end"
-                    android:text="User Mother Name"
+                    android:text=""
                     android:textSize="20dp"
                     android:layout_marginLeft="10dp"
                     android:visibility="gone"/>
@@ -171,7 +171,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="end"
-                    android:text="04-October-1999"
+                    android:text=""
                     android:textSize="20dp"
                     android:layout_marginLeft="10dp"/>
                 <EditText
@@ -179,7 +179,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="end"
-                    android:text="User DOB"
+                    android:text=""
                     android:inputType="date"
                     android:textSize="20dp"
                     android:layout_marginLeft="10dp"
@@ -203,7 +203,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="end"
-                    android:text="User Semester"
+                    android:text=""
                     android:textSize="20dp"
                     android:layout_marginLeft="10dp"/>
                 <EditText
@@ -211,7 +211,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="end"
-                    android:text="User Semester"
+                    android:text=""
                     android:textSize="20dp"
                     android:layout_marginLeft="10dp"
                     android:visibility="gone"/>
@@ -234,7 +234,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="end"
-                    android:text="B-"
+                    android:text=""
                     android:textSize="20dp"
                     android:layout_marginLeft="10dp"/>
                 <EditText
@@ -242,7 +242,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="end"
-                    android:text="User Blood Group"
+                    android:text=""
                     android:textSize="20dp"
                     android:layout_marginLeft="10dp"
                     android:visibility="gone"/>
@@ -265,7 +265,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="end"
-                    android:text="BT18CSE054"
+                    android:text=""
                     android:textSize="20dp"
                     android:layout_marginLeft="10dp"/>
                 <EditText
@@ -273,7 +273,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="end"
-                    android:text="User Enrollment No"
+                    android:text=""
                     android:textSize="20dp"
                     android:layout_marginLeft="10dp"
                     android:visibility="gone"/>
@@ -296,7 +296,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="end"
-                    android:text="CSE"
+                    android:text=""
                     android:textSize="20dp"
                     android:layout_marginLeft="10dp"/>
                 <EditText
@@ -304,7 +304,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="end"
-                    android:text="User Branch"
+                    android:text=""
                     android:textSize="20dp"
                     android:layout_marginLeft="10dp"
                     android:visibility="gone"/>

@@ -2,6 +2,7 @@ package com.example.tabbedactivities.ui.home;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -22,23 +23,58 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.tabbedactivities.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import static androidx.core.content.ContextCompat.getSystemService;
 
 public class HomeFragment extends Fragment  {
 
+    private static final String TAG = "HOME FRAGMENT";
     private HomeViewModel homeViewModel;
     private Context mContext;
     private Button view_Course;
+    FirebaseFirestore firebaseFirestore;
+    FirebaseAuth firebaseAuth;
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        firebaseFirestore = FirebaseFirestore.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
         mContext = getActivity();
-        homeViewModel =
-                ViewModelProviders.of(this).get(HomeViewModel.class);
+        homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
+
         view_Course = root.findViewById(R.id.view_course_current_status);
         final TextView textView = root.findViewById(R.id.text_home);
+
+        final LinearLayout current_status = root.findViewById(R.id.current_status);
+
+        DocumentReference documentReference = firebaseFirestore.collection("users").document(firebaseAuth.getCurrentUser().getUid());
+        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        if(document.get("enrolled") != null && (Boolean) document.get("enrolled") == false)
+                            current_status.setVisibility(View.GONE);
+                        else {
+                            current_status.setVisibility(View.VISIBLE);
+                        }
+                    } else {
+                        Log.d(TAG, "No such document");
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
+
         view_Course.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -47,6 +83,7 @@ public class HomeFragment extends Fragment  {
                 p.showPopupWindow(v);
             }
         });
+
         homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
@@ -55,15 +92,6 @@ public class HomeFragment extends Fragment  {
         });
         return root;
     }
-
-//    @Override
-//    public void onClick(View v) {
-//        switch (v.getId()){
-//            case R.id.view_course_current_status:
-//                Toast.makeText(getContext(), "View Courses Now", Toast.LENGTH_SHORT).show();
-//                break;
-//        }
-//    }
 
     @Override
     public void onAttach(Context context) {
@@ -75,28 +103,4 @@ public class HomeFragment extends Fragment  {
         super.onDetach();
     }
 
-//    public void onButtonShowPopupWindowClick(View view) {
-//
-//        // inflate the layout of the popup window
-//        View popupView = inflater.inflate(R.layout.popup_courses, null);
-//
-//        // create the popup window
-//        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
-//        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-//        boolean focusable = true; // lets taps outside the popup also dismiss it
-//        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
-//
-//        // show the popup window
-//        // which view you pass in doesn't matter, it is only used for the window tolken
-//        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
-//
-//        // dismiss the popup window when touched
-//        popupView.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                popupWindow.dismiss();
-//                return true;
-//            }
-//        });
-//    }
 }
